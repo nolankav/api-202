@@ -74,11 +74,15 @@ acs <- acs %>% mutate(
 acs_wide <- acs %>% select(county_fips, variable, estimate) %>%
   pivot_wider(names_from = variable, values_from = estimate)
 
+# Recode graduation rate
+# Original variable is % with less than HS
+acs_wide$pc_hs_grad <- 100 - acs_wide$pc_hs_grad
+
 # Merge datasets
 df <- left_join(trump, acs_wide, by=c("county_fips"))
 
-# Eliminate unmatched counties
-df <- df %>% filter_at(vars(pc_trump, pc_under_18), all_vars(!is.na(.)))
+# Eliminate counties with missing data
+df <- df[complete.cases(df), ]
 
 # Export dataframe
 write.csv(df, "Sample dataset.csv")
@@ -101,8 +105,8 @@ plot_1 <- ggplot(df, aes(x=pc_hs_grad, y=pc_trump)) +
   theme_light() + theme(text = element_text(face="bold")) +
   scale_y_continuous(limits=c(0,100),
                      labels = function(x) paste0(x,"%")) +
-  scale_x_continuous(limits=c(0,60),
-                     labels = function(x) paste0(x, "%"))
+  scale_x_continuous(limits=c(40,100),
+                     labels = function(x) paste0(x,"%"))
 
 # Export figure
 ggsave(plot=plot_1, file="Example graph 1.pdf",
@@ -122,14 +126,38 @@ plot_2 <- ggplot(df, aes(x=pc_hs_grad, y=pc_trump)) +
   theme_light() + theme(text = element_text(face="bold")) +
   scale_y_continuous(limits=c(0,100),
                      labels = function(x) paste0(x,"%")) +
-  scale_x_continuous(limits=c(0,60),
-                     labels = function(x) paste0(x, "%")) +
+  scale_x_continuous(limits=c(40,100),
+                     labels = function(x) paste0(x,"%")) +
   
   # Add line of best fit
   geom_smooth(method="lm", se=F, formula = y~x)
 
 # Export figure
 ggsave(plot=plot_2, file="Example graph 2.pdf",
+       width=4, height=4, units='in', dpi=600)
+
+# Graph high school graduation and Trump support
+plot_3 <- ggplot(df, aes(x=pc_hs_grad, y=pc_trump)) +
+  
+  # Add scatterplot points
+  geom_point(alpha=0.25) +
+  
+  # Labels of axes
+  xlab("County high school graduation rate") +
+  ylab("County support for Trump") +
+  
+  # Cosmetic changes
+  theme_light() + theme(text = element_text(face="bold")) +
+  scale_y_continuous(limits=c(0,140), breaks=seq(0,140,20),
+                     labels = function(x) paste0(x,"%")) +
+  scale_x_continuous(limits=c(0,100),
+                     labels = function(x) paste0(x,"%")) +
+  
+  # Extend line of best fit to 0
+  geom_smooth(method="lm", se=F, formula = y~x, fullrange=T)
+
+# Export figure
+ggsave(plot=plot_3, file="Example graph 3.pdf",
        width=4, height=4, units='in', dpi=600)
 
 ##############################################################################
@@ -141,3 +169,4 @@ ggsave(plot=plot_2, file="Example graph 2.pdf",
 # RHS = unemployment rate
 reg_1 <- lm(pc_trump ~ pc_hs_grad, data=df)
 summary(reg_1)
+confint(reg_1)
