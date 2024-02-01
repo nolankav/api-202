@@ -12,8 +12,6 @@ library(here)         # Working directory
 library(dplyr)        # Analysis tools
 library(tidyverse)    # Analysis tools
 library(ggplot2)      # Graphing tools
-library(usmap)        # Graphing tools
-library(viridis)      # Graphing tools
 library(tidycensus)   # Census tools
 
 ##############################################################################
