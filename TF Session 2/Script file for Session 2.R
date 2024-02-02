@@ -14,7 +14,6 @@ library(tidyverse)    # Analysis tools
 library(ggplot2)      # Graphing tools
 library(scales)       # Graphing tools
 library(modelsummary) # Table tools
-library(tidycensus)   # Census tools
 
 ##############################################################################
 # Dataset preparation
@@ -23,11 +22,11 @@ library(tidycensus)   # Census tools
 # Read in sample dataset
 df <- read.csv("Sample dataset.csv")
 
-# Scale median income by $1000
-df$med_inc_000s <- df$median_income/1000
-
-# Re-write sample dataset
-write.csv(df, "Sample dataset.csv")
+# # Scale median income by $1000
+# df$med_inc_000s <- df$median_income/1000
+# 
+# # Re-write sample dataset
+# write.csv(df %>% select(-X), "Sample dataset.csv")
 
 ##############################################################################
 # Graphical exploration
