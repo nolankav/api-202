@@ -86,7 +86,7 @@ plot_2 <- ggplot(df, aes(x=pc_hs_grad, y=pc_trump,
   ylab("County support for Trump") +
   
   # Add best fit line
-  geom_smooth(method="lm", se=F, formula = y~x) +
+  geom_smooth(method="lm", se=F, formula = y~x, color="black") +
   
   # Cosmetic changes
   theme_light() + theme(text = element_text(face="bold")) +
@@ -97,7 +97,8 @@ plot_2 <- ggplot(df, aes(x=pc_hs_grad, y=pc_trump,
   
   # Split into facets
   facet_grid(.~majority_labeled) +
-  theme(legend.position="none")
+  theme(legend.position="none",
+        strip.background=element_rect(fill = "black"))
 
 # Export figure
 ggsave(plot=plot_2, file="Example graph 2.pdf",
