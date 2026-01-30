@@ -1,6 +1,6 @@
 # API 202: TF Session 1
 # N.M. Kavanagh
-# January 31, 2025
+# January 30, 2026
 
 # Please direct questions about this script file to nolankavanagh@fas.harvard.edu.
 
@@ -164,7 +164,7 @@ ggsave(plot=plot_3, file="Example graph 3.pdf",
 
 # Estimate regression
 # LHS = support for Trump
-# RHS = unemployment rate
+# RHS = high school graduation rate
 reg_1 <- lm(pc_trump ~ pc_hs_grad, data=df)
 summary(reg_1)
 confint(reg_1)
